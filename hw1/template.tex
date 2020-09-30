@@ -1,0 +1,215 @@
+\documentclass{homework}
+\usepackage{graphicx} %package to manage images
+\graphicspath{ {./images/} }
+\studname{Xiaoli Sun (xs2338)}
+\studmail{xs2338@columbia.edu}
+\coursename{STAT GR5293: Financial Technology and Data-Driven Innovation}
+\hwNo{1}
+
+\begin{document}
+\maketitle
+
+
+\section*{Problem 1: Exploratory Data Analysis}
+\subsection*{(a)}
+There are 10469 rows and 11 columns. \\
+These functions in Python are used to get the answer. 
+\begin{verbatim}
+count_row = data_36.shape[0]
+count_col = data_36.shape[1]
+\end{verbatim}
+   
+\subsection*{(b)}
+   Answer: as inTable 1\\
+   Python function used:
+   \begin{verbatim}
+data_36.dtypes
+\end{verbatim}
+
+\subsection*{(c)}   
+
+Answer: as inTable 1   \begin{table}
+\centering
+\caption{Question(b \& c)}
+    \begin{tabular}{l|c|c|c}
+        \hline
+    Field Name          & (b)        & (b)            &  (c) \\
+                        & Data Type  &  Numerical/Categorical?    & Units \\ \hline
+    Original Loan Balance & float &  Numerical &   dollar \\ \hline
+    Interest Rate   & float &  Numerical &   ratio \\ \hline
+    Term         & int & Numerical &  month \\  \hline
+    Monthly Payment  & float &  Numerical &   dollar \\ \hline
+    Annual Income & float &  Numerical &   dollar \\ \hline
+    Pre-Loan DTI & float &  Numerical &   The debt-to-income ratio   \\ \hline
+    Original FICO  & int & Numerical &  Credit score (per point)\\ \hline
+    Number of Trade Lines &&& \\
+    \ \ \ Opened (Last 12 Months) & int & Numerical &  counts per unit trade \\ \hline
+    Employment Length & float &  Numerical &  year  \\ \hline
+    Housing Status & str object & Categorical & NA \\ \hline
+    Loan Status  & str object & Categorical & NA \\ \hline
+    \end{tabular}
+\end{table}
+   
+
+
+
+\subsection*{(d)}   
+The distributions of Original Loan Balance, Pre-Loan DTI, and Original FICO are shown in Figures 1, 2, and 3 below.\\
+   For other answers, use the table 2 below. \\
+      Python function used:
+   \begin{verbatim}
+sns.distplot(data_36['Original FICO'])
+len(data_36['Original FICO'].unique())
+\end{verbatim}
+
+
+
+  \begin{table}
+\centering
+\caption{Question(d)}
+    \begin{tabular}{l|c|c|c}
+        \hline
+    Field Name          & (d)    & (d)  & (d)\\
+                       & Bounds? & Continuous/Discrete? & Number of Unique Values \\ \hline
+    Annual Income & No upper bound. Has lower bound. & Continuous  & 1317 \\ \hline
+    Pre-Loan DTI  & has both bounds & Continuous  & 3482 \\ \hline
+    Original FICO & No upper bound. Has lower bound. & Discrete & 38 \\ \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+     \begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.50]{"income.png"}
+    \caption{Histogram of Annual Income}
+    \label{fig:annual income_hist}
+    \end{figure}
+    
+    
+       \begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.50]{"DTI.png"}
+    \caption{Histogram of Pre-Loan DTI}
+    \label{fig:pre loan dti_hist}
+    \end{figure}
+
+    
+    
+       \begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.50]{"FICO.png"}
+    \caption{Histogram of Original FICO}
+    \label{fig:original fico_hist}
+    \end{figure}
+
+
+\newpage
+
+
+
+
+
+
+\section*{Problem 2: Timeline Associated with Data}
+\subsection*{(a)}
+Each row represents a loan, and includes attributes of borrowers when they apply, decisions made by the lender or platform, and then what happens over the life of the loan. Describe the chronological order of how these fields are recorded in this dataset. That is,
+\subsubsection*{(i) Which fields are recorded when a borrower applies for a loan with LendingClub?}
+Annual Income , Pre-Loan DTI  , Original FICO   , Employment Length  , Housing Status .
+\subsubsection*{(ii) Which fields are gathered when LendingClub inquires about a borrower when they contact credit bureaus and FICO?}
+Number of Trade Lines Opened (Last 12 Months)    .
+\subsubsection*{(iii) Which fields are set when LendingClub sets the terms of the loan?)}
+Original Loan Balance , Term  , Interest Rate  , Monthly Payment .
+\subsubsection*{(iv) Which fields are determined some time after the borrower begins to pay back the loan (or not)?}
+Loan Status  
+
+
+\subsection*{(b)}
+Each of the attributes reflects the state of the borrower at the time of an application, but borrowers are dynamic! At least two of these fields change when a new loan is taken out. Please say which ones and describe, in mathematical terms, how they change.
+\subsubsection*{answer:}
+new Number of Trade Lines Opened (Last 12 Months)   = old Number of Trade Lines Opened (Last 12 Months)  +1 \\
+\\
+$new PreLoan DTI  =[old PreLoan DTI * Monthly Income +\\
+ Monthly Payment (this new loan)]/Monthly Income$\\
+ \\
+where Monthly Income = Annual Income/12.   (this is fixed value)\\
+\\
+new FICO = FICO-function(updated parameters)
+
+\subsection*{(c)}
+ManyMLcoursesthatusecreditdatashowloanoutcomesexclusivelyfallingintotwoclasses: default or no default, and a simplification also used in many industry applications. In reality, loans involve payments by borrowers over time and so the outcome of a single loan does not fall neatly into two categories. However, for the purposes of analyzing trends, we will show one common way of mapping sequences of payments into two aforementioned classes.
+\subsubsection*{(i) What outcomes are shown in the original dataset?}
+\textbf{Python used:}
+\begin{verbatim}
+data_36['Loan Status'].unique()
+\end{verbatim}
+\textbf{Outcome:}\\
+\\
+'Paid Off', 'Current', 'Sold - Debt Sale', 'Charged Off',
+       '60 - 89 Days Delinquent', '30 - 59 Days Delinquent',
+       '$\geq$ 90 Days Delinquent', 'Late (16 - 29 DPD)'\\
+       \\
+8 kinds of status.
+\subsubsection*{(ii) Using the mapping shown in the notebook, what is the overall default prevalence?}
+\textbf{Python used:}
+\begin{verbatim}
+data_36_default['Default'].mean()
+\end{verbatim}
+overall default prevalence = 0.03648868086732257. Prevalence of default is low. Most people make loan payment on time.
+
+\newpage
+\section*{Problem 3: Understanding Original FICO, Pre-Loan, DTI, and Income}
+\subsection*{a}
+Use seaborn to create a joinplot (contour plot with histograms) of Original FICO scores ($x1$), Pre-loan DTI ($x2$), and prevalence (i.e. percentage) of default ($y$). Include this plot in your solutions write-up. Which variable–original FICO or pre-loan DTI–appears to be a better predictor of probability of default? Why? Which distribution is more symmetric?
+\subsubsection*{Answer:}
+\textbf{Python used:}
+\begin{verbatim}
+sns.jointplot('Original FICO', 'Pre-Loan DTI', data =  data_36_default , kind = 'kde')
+\end{verbatim}
+
+     \begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.50]{"seaborn.png"}
+    \caption{Plotting FICO, DTI, and prevalance}
+    \label{fig:original fico_hist}
+    \end{figure}
+
+
+ \textbf{pre-loan DTI} appears to be a better predictor of probability of default.  There are too many extreme points in the distribution of Original FICO. Original FICO has a long tail, which makes it a worse predictor. \\
+ \textbf{pre-loan DTI} has a more symmetric distribution.\\
+
+
+
+\subsection*{(b)}
+\subsubsection*{(i)}
+How does the prevalence of default behave as a borrower’s pre-loan DTI increases?\\
+ \textbf{Decrease $\rightarrow $ Increase $\rightarrow $ Decrease}\\
+\\
+How does the prevalence of default behave as a borrower’s original FICO score increases?\\
+ \textbf{Overall decrease monotonicly.}\\
+
+
+\subsubsection*{(ii)}
+The population more evenly distributed between the bins for \textbf{pre-loan DTI }.\\
+Higher proportions of population in each bin make me \textbf{more confident} about the associated prevalence of default. When the population bin grows taller, Original FICO becomes smaller, which implies that the borrower is not financially healthy. They are more likely to default. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document} 
